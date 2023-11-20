@@ -25,6 +25,7 @@ import org.springframework.stereotype.Component;
 
 @Component("demoServiceComponent")
 public class DemoServiceComponent implements DemoService {
+    // 通过注解注入dubbo服务
     @DubboReference
     private DemoService demoService;
 

@@ -33,11 +33,16 @@ public class Application {
     }
 
     private static void startWithBootstrap() {
+        // ServiceConfig实例, 泛型参数为业务接口实现类
         ServiceConfig<DemoServiceImpl> service = new ServiceConfig<>();
+        // 指定业务接口
         service.setInterface(DemoService.class);
+        // 指定实现类
         service.setRef(new DemoServiceImpl());
 
+//        bootstrap单例对象
         DubboBootstrap bootstrap = DubboBootstrap.getInstance();
+        //生成一个 ApplicationConfig 的实例、指定ZK地址以及ServiceConfig实例
         bootstrap
                 .application(new ApplicationConfig("dubbo-demo-api-provider"))
                 .registry(new RegistryConfig(REGISTRY_URL))
