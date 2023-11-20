@@ -20,23 +20,25 @@
        xmlns="http://www.springframework.org/schema/beans"
        xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-4.3.xsd
        http://dubbo.apache.org/schema/dubbo http://dubbo.apache.org/schema/dubbo/dubbo.xsd">
-
+<!--配置当前应用信息-->
     <dubbo:application name="demo-provider" >
     </dubbo:application>
 
     <dubbo:config-center address="zookeeper://127.0.0.1:2181"/>
+<!--元数据配置，以key-value格式持久化保存-->
     <dubbo:metadata-report address="zookeeper://127.0.0.1:2181"/>
+    <!--指定注册中心-->
     <dubbo:registry id="registry1" address="zookeeper://127.0.0.1:2181?registry-type=service"/>
-
+<!--提供方指定协议 port -1则分配一个未使用的端口-->
     <dubbo:protocol name="dubbo" port="-1"/>
     <dubbo:protocol name="rest" port="-1"/>
     <dubbo:protocol name="tri" port="-1"/>
-
+<!--配置service bean-->
     <bean id="demoService" class="org.apache.dubbo.demo.provider.DemoServiceImpl"/>
     <bean id="greetingService" class="org.apache.dubbo.demo.provider.GreetingServiceImpl"/>
     <bean id="restDemoService" class="org.apache.dubbo.demo.provider.RestDemoServiceImpl"/>
     <bean id="tripleService" class="org.apache.dubbo.demo.provider.TripleServiceImpl"/>
-
+<!--暴露dubbo服务-->
     <dubbo:service delay="5000" interface="org.apache.dubbo.demo.DemoService" timeout="3000" ref="demoService" registry="registry1" protocol="dubbo"/>
     <dubbo:service delay="5000" version="1.0.0" group="greeting" timeout="5000" interface="org.apache.dubbo.demo.GreetingService"
                    ref="greetingService" protocol="dubbo"/>

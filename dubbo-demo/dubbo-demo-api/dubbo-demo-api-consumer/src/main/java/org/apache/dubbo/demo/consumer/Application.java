@@ -25,6 +25,8 @@ import org.apache.dubbo.config.bootstrap.DubboBootstrap;
 import org.apache.dubbo.demo.DemoService;
 import org.apache.dubbo.rpc.service.GenericService;
 
+import java.util.ServiceLoader;
+
 public class Application {
 
     private static final String REGISTRY_URL = "zookeeper://127.0.0.1:2181";
@@ -34,6 +36,7 @@ public class Application {
     }
 
     private static void runWithBootstrap() {
+        // ReferenceConfig指定引用接口
         ReferenceConfig<DemoService> reference = new ReferenceConfig<>();
         reference.setInterface(DemoService.class);
         reference.setGeneric("true");
@@ -46,6 +49,7 @@ public class Application {
                 .reference(reference)
                 .start();
 
+        // 获取demoservice实例
         DemoService demoService = bootstrap.getCache().get(reference);
         String message = demoService.sayHello("dubbo");
         System.out.println(message);

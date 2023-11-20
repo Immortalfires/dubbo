@@ -166,6 +166,7 @@ public class ZookeeperRegistry extends CacheableFailbackRegistry {
         }
     }
 
+    // Provider向注册中心注册
     @Override
     public void doRegister(URL url) {
         try {
@@ -188,6 +189,7 @@ public class ZookeeperRegistry extends CacheableFailbackRegistry {
         }
     }
 
+    // Consumer向注册中心订阅provider
     @Override
     public void doSubscribe(final URL url, final NotifyListener listener) {
         try {

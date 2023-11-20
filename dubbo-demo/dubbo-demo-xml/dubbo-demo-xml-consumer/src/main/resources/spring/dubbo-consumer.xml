@@ -20,14 +20,15 @@
        xmlns="http://www.springframework.org/schema/beans"
        xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-4.3.xsd
        http://dubbo.apache.org/schema/dubbo http://dubbo.apache.org/schema/dubbo/dubbo.xsd">
-
+    <!--配置当前应用信息-->
     <dubbo:application name="demo-consumer">
     </dubbo:application>
-
+    <!--元数据配置，以key-value格式持久化保存-->
     <dubbo:metadata-report address="zookeeper://127.0.0.1:2181"/>
-
+<!--zk地址，用于拉取provider暴露的服务列表-->
     <dubbo:registry id="demo1" address="zookeeper://127.0.0.1:2181?registry-type=service"/>
 
+<!--引入dubbo-->
     <dubbo:reference id="demoService" check="false"
                      interface="org.apache.dubbo.demo.DemoService"/>
 

@@ -26,14 +26,18 @@ import org.springframework.context.annotation.PropertySource;
 
 public class Application {
     public static void main(String[] args) throws Exception {
+        // 初始化, 从ProviderConfiguration类上的注解拿配置信息
         AnnotationConfigApplicationContext context =
                 new AnnotationConfigApplicationContext(ProviderConfiguration.class);
         context.start();
         System.in.read();
     }
 
+    //配置类
     @Configuration
+    // 扫描指定包下的bean,作为dubbo服务暴露出去 即DemoServiceImpl
     @EnableDubbo(scanBasePackages = "org.apache.dubbo.demo.provider")
+    // 指定其他配置信息
     @PropertySource("classpath:/spring/dubbo-provider.properties")
     static class ProviderConfiguration {
         @Bean
