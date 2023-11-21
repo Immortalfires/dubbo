@@ -773,15 +773,19 @@ public class ExtensionLoader<T> {
             throw findException(name);
         }
         try {
+            // 获取所有的拓展类
             T instance = (T) extensionInstances.get(clazz);
             if (instance == null) {
+                // 通过反射创建拓展对象
                 extensionInstances.putIfAbsent(clazz, createExtensionInstance(clazz));
                 instance = (T) extensionInstances.get(clazz);
                 instance = postProcessBeforeInitialization(instance, name);
+                // 向拓展对象中注入依赖
                 injectExtension(instance);
                 instance = postProcessAfterInitialization(instance, name);
             }
 
+            // 包裹在相应的wrapper对象中
             if (wrap) {
                 List<Class<?>> wrapperClassesList = new ArrayList<>();
                 if (cachedWrapperClasses != null) {
