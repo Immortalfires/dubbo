@@ -397,6 +397,7 @@ public class UrlUtils {
     }
 
     public static boolean isMatch(URL consumerUrl, URL providerUrl) {
+        // 优先取interface， 其次取path
         String consumerInterface = consumerUrl.getServiceInterface();
         String providerInterface = providerUrl.getServiceInterface();
 
@@ -411,6 +412,7 @@ public class UrlUtils {
             return false;
         }
 
+        // 匹配category
         // If the category of provider URL does not match the category of consumer URL.
         // Usually, the provider URL's category is empty, and the default category ('providers') is present.
         // Hence, the category of the provider URL is 'providers'.
@@ -420,11 +422,13 @@ public class UrlUtils {
             return false;
         }
 
+        // 检查enable参数
         // If the provider is not enabled, return false.
         if (!providerUrl.getParameter(ENABLED_KEY, true) && !ANY_VALUE.equals(consumerUrl.getParameter(ENABLED_KEY))) {
             return false;
         }
 
+        // 检查group、version、classifier是否符合条件
         // Obtain consumer's group, version and classifier.
         String consumerGroup = consumerUrl.getGroup();
         String consumerVersion = consumerUrl.getVersion();

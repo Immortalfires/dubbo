@@ -59,12 +59,20 @@ public abstract class FailbackRegistry extends AbstractRegistry {
 
     /**
      * The time in milliseconds the retryExecutor will wait
+     * 重试间隔
      */
     private final int retryPeriod;
 
     // Timer for failure retry, regular check if there is a request for failure, and if there is, an unlimited retry
+    // 用于定时执行失败重试操作的时间轮
     private final HashedWheelTimer retryTimer;
 
+    /**
+     * 构造方法
+     * 调用父类构造方法初始化本地缓存
+     * 初始化retryPeriod属性
+     * 初始化retryTimer时间轮
+     */
     public FailbackRegistry(URL url) {
         super(url);
         this.retryPeriod = url.getParameter(REGISTRY_RETRY_PERIOD_KEY, DEFAULT_REGISTRY_RETRY_PERIOD);
@@ -94,12 +102,14 @@ public abstract class FailbackRegistry extends AbstractRegistry {
 
     private void addFailedRegistered(URL url) {
         FailedRegisteredTask oldOne = failedRegistered.get(url);
+        // 已有重试任务
         if (oldOne != null) {
             return;
         }
         FailedRegisteredTask newTask = new FailedRegisteredTask(url, this);
         oldOne = failedRegistered.putIfAbsent(url, newTask);
         if (oldOne == null) {
+            // 新建的重试任务提交至时间轮
             // never has a retry task. then start a new task for retry.
             retryTimer.newTimeout(newTask, retryPeriod, TimeUnit.MILLISECONDS);
         }
@@ -195,15 +205,19 @@ public abstract class FailbackRegistry extends AbstractRegistry {
 
     @Override
     public void register(URL url) {
+        // url是否匹配，匹配则接受
         if (!acceptable(url)) {
             logger.info("URL " + url + " will not be registered to Registry. Registry " + this.getUrl()
                     + " does not accept service of this protocol type.");
             return;
         }
+        // 调用父类register方法，添加url到registered结合
         super.register(url);
+        // 从这两个集合中删除该url 停止重试
         removeFailedRegistered(url);
         removeFailedUnregistered(url);
         try {
+            // 与注册中心交互
             // Sending a registration request to the server side
             doRegister(url);
         } catch (Exception e) {
@@ -231,6 +245,7 @@ public abstract class FailbackRegistry extends AbstractRegistry {
                         t);
             }
 
+            // 异常出现，且满足以上条件，创建重试任务加入到failedRegistered集合中
             // Record a failed registration request to a failed list, retry regularly
             addFailedRegistered(url);
         }
