@@ -476,7 +476,7 @@ public abstract class AbstractRegistry implements Registry {
     }
 
     protected void recover() throws Exception {
-        // register
+        // register provider和注册中心的重连方法，重新注册所有url
         Set<URL> recoverRegistered = new HashSet<>(getRegistered());
         if (!recoverRegistered.isEmpty()) {
             if (logger.isInfoEnabled()) {
@@ -486,7 +486,7 @@ public abstract class AbstractRegistry implements Registry {
                 register(url);
             }
         }
-        // subscribe
+        // subscribe consumer和注册中心的重连方法，重新订阅所有url
         Map<URL, Set<NotifyListener>> recoverSubscribed = new HashMap<>(getSubscribed());
         if (!recoverSubscribed.isEmpty()) {
             if (logger.isInfoEnabled()) {
@@ -508,7 +508,7 @@ public abstract class AbstractRegistry implements Registry {
 
         for (Map.Entry<URL, Set<NotifyListener>> entry : getSubscribed().entrySet()) {
             URL url = entry.getKey();
-
+            // 匹配Consumer和provider的url
             if (!UrlUtils.isMatch(url, urls.get(0))) {
                 continue;
             }
@@ -517,6 +517,7 @@ public abstract class AbstractRegistry implements Registry {
             if (listeners != null) {
                 for (NotifyListener listener : listeners) {
                     try {
+                        // notify方法
                         notify(url, listener, filterEmpty(url, urls));
                     } catch (Throwable t) {
                         // 1-7: Failed to notify registry event.
@@ -573,6 +574,7 @@ public abstract class AbstractRegistry implements Registry {
             categoryNotified.put(category, categoryList);
             listener.notify(categoryList);
 
+            // 如果file-cache选项开启，则缓存url到本地properties文件
             // We will update our cache file after each notification.
             // When our Registry has a subscribed failure due to network jitter, we can return at least the existing
             // cache URL.
