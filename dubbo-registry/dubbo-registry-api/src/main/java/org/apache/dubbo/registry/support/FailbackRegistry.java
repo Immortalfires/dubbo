@@ -411,6 +411,9 @@ public abstract class FailbackRegistry extends AbstractRegistry {
         }
     }
 
+    /**
+     * 覆写 {@link AbstractRegistry#notify(URL, NotifyListener, List)}
+     */
     @Override
     protected void notify(URL url, NotifyListener listener, List<URL> urls) {
         if (url == null) {

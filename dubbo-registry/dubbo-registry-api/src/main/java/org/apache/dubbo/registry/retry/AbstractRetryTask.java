@@ -106,6 +106,10 @@ public abstract class AbstractRetryTask implements TimerTask {
         timer.newTimeout(timeout.task(), tick, TimeUnit.MILLISECONDS);
     }
 
+    /**
+     * 模板方法，子类实现retry方法
+     * 失败后进入reput方法再次重试
+     */
     @Override
     public void run(Timeout timeout) throws Exception {
         if (timeout.isCancelled() || timeout.timer().isStop() || isCancel()) {
